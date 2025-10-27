@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Meet Attendance Form</title>
+  <style>
+    /* Reset */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #e8efff, #f9f9ff);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .form-container {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      width: 100%;
+      max-width: 420px;
+      transition: transform 0.3s ease;
+    }
+
+    .form-container:hover {
+      transform: translateY(-5px);
+    }
+
+    h2 {
+      text-align: center;
+      color: #1a237e;
+      margin-bottom: 30px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    label {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    input {
+      padding: 12px 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1em;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    input:focus {
+      border-color: #3f51b5;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.1);
+    }
+
+    button {
+      background-color: #3f51b5;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.1s;
+    }
+
+    button:hover {
+      background-color: #303f9f;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .success, .error {
+      text-align: center;
+      font-size: 0.95em;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .success {
+      color: #2e7d32;
+    }
+
+    .error {
+      color: #c62828;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>Attendance Form</h2>
+    <form id="meetForm">
+      <div>
+        <label for="name">Full Name (as in Google Meet)*</label>
+        <input type="text" id="name" name="name" placeholder="e.g. John Doe" required>
+      </div>
+
+      <div>
+        <label for="email">Email*</label>
+        <input type="email" id="email" name="email" placeholder="e.g. john@example.com" required>
+      </div>
+
+      <div>
+        <label for="phone">Phone Number*</label>
+        <input type="tel" id="phone" name="phone" placeholder="e.g. +1234567890" required>
+      </div>
+
+      <div>
+        <label for="teleId">Telegram ID (optional)</label>
+        <input type="text" id="teleId" name="teleId" placeholder="@username">
+      </div>
+
+      <button type="submit">Submit</button>
+
+      <p class="success" id="successMsg">✅ Submitted successfully!</p>
+      <p class="error" id="errorMsg">❌ Failed to submit. Please try again.</p>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('meetForm');
+    const successMsg = document.getElementById('successMsg');
+    const errorMsg = document.getElementById('errorMsg');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      successMsg.style.display = 'none';
+      errorMsg.style.display = 'none';
+
+      const formData = Object.fromEntries(new FormData(form).entries());
+
+      try {
+        const res = await fetch('https://YOUR-N8N-WEBHOOK-URL', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+
+        if (res.ok) {
+          successMsg.style.display = 'block';
+          form.reset();
+        } else {
+          errorMsg.style.display = 'block';
+        }
+      } catch (err) {
+        console.error(err);
+        errorMsg.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
