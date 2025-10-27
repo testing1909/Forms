@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Meet Attendance </title>
+  <title>Google Meet Attendance</title>
   <style>
     /* Reset */
     * {
@@ -106,7 +106,6 @@
   </style>
 </head>
 <body>
-
   <div class="form-container">
     <h2>Attendance Form</h2>
     <form id="meetForm">
@@ -114,29 +113,23 @@
         <label for="name">Full Name (as in Google Meet)*</label>
         <input type="text" id="name" name="name" placeholder="e.g. John Doe" required>
       </div>
-
       <div>
         <label for="email">Email*</label>
         <input type="email" id="email" name="email" placeholder="e.g. john@example.com" required>
       </div>
-
       <div>
         <label for="phone">Phone Number*</label>
         <input type="tel" id="phone" name="phone" placeholder="e.g. +1234567890" required>
       </div>
-
       <div>
         <label for="teleId">Telegram ID (optional)</label>
         <input type="text" id="teleId" name="teleId" placeholder="@username">
       </div>
-
       <button type="submit">Submit</button>
-
       <p class="success" id="successMsg">✅ Submitted successfully!</p>
       <p class="error" id="errorMsg">❌ Failed to submit. Please try again.</p>
     </form>
   </div>
-
   <script>
     const form = document.getElementById('meetForm');
     const successMsg = document.getElementById('successMsg');
@@ -148,22 +141,28 @@
       errorMsg.style.display = 'none';
 
       const formData = Object.fromEntries(new FormData(form).entries());
+      const payload = { body: formData }; // Nest formData under "body"
+      console.log('Sending payload:', JSON.stringify(payload));
 
       try {
         const res = await fetch('https://biltance.app.n8n.cloud/webhook/form_data', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
+          body: JSON.stringify(payload)
         });
+        const responseText = await res.text();
+        console.log('Response:', res.status, responseText);
 
-        if (res.ok) {
+        if (res.status === 200 || res.status === 201) {
           successMsg.style.display = 'block';
           form.reset();
         } else {
+          errorMsg.textContent = `❌ Failed to submit: ${res.status} ${responseText}`;
           errorMsg.style.display = 'block';
         }
       } catch (err) {
-        console.error(err);
+        console.error('Error:', err);
+        errorMsg.textContent = `❌ Failed to submit: ${err.message}`;
         errorMsg.style.display = 'block';
       }
     });
