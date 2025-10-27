@@ -6,10 +6,7 @@
   <title>Google Meet Attendance</title>
   <style>
     /* Reset */
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', Roboto, sans-serif;
       background: linear-gradient(135deg, #e8efff, #f9f9ff);
@@ -20,55 +17,32 @@
       margin: 0;
       padding: 20px;
     }
-
     .form-container {
       background: #fff;
       border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
       padding: 40px;
       width: 100%;
       max-width: 420px;
       transition: transform 0.3s ease;
     }
-
-    .form-container:hover {
-      transform: translateY(-5px);
-    }
-
-    h2 {
-      text-align: center;
-      color: #1a237e;
-      margin-bottom: 30px;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    label {
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 6px;
-      display: block;
-    }
-
+    .form-container:hover { transform: translateY(-5px); }
+    h2 { text-align: center; color: #1a237e; margin-bottom: 30px; }
+    form { display: flex; flex-direction: column; gap: 18px; }
+    label { font-weight: 600; color: #333; margin-bottom: 6px; display: block; }
     input {
       padding: 12px 14px;
       border: 1px solid #ccc;
       border-radius: 6px;
       font-size: 1em;
-      transition: border-color 0.2s;
       width: 100%;
+      transition: border-color 0.2s;
     }
-
     input:focus {
       border-color: #3f51b5;
       outline: none;
-      box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.1);
+      box-shadow: 0 0 0 2px rgba(63,81,181,0.1);
     }
-
     button {
       background-color: #3f51b5;
       color: #fff;
@@ -80,29 +54,16 @@
       cursor: pointer;
       transition: background-color 0.3s, transform 0.1s;
     }
-
-    button:hover {
-      background-color: #303f9f;
-    }
-
-    button:active {
-      transform: scale(0.98);
-    }
-
+    button:hover { background-color: #303f9f; }
+    button:active { transform: scale(0.98); }
     .success, .error {
       text-align: center;
       font-size: 0.95em;
       margin-top: 10px;
       display: none;
     }
-
-    .success {
-      color: #2e7d32;
-    }
-
-    .error {
-      color: #c62828;
-    }
+    .success { color: #2e7d32; }
+    .error { color: #c62828; }
   </style>
 </head>
 <body>
@@ -130,6 +91,7 @@
       <p class="error" id="errorMsg">❌ Failed to submit. Please try again.</p>
     </form>
   </div>
+
   <script>
     const form = document.getElementById('meetForm');
     const successMsg = document.getElementById('successMsg');
@@ -140,16 +102,18 @@
       successMsg.style.display = 'none';
       errorMsg.style.display = 'none';
 
+      // Get form data as plain object
       const formData = Object.fromEntries(new FormData(form).entries());
-      const payload = { body: formData }; // Nest formData under "body"
-      console.log('Sending payload:', JSON.stringify(payload));
+
+      console.log('Sending payload:', JSON.stringify(formData));
 
       try {
         const res = await fetch('https://biltance.app.n8n.cloud/webhook/form_data', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(formData) // Send JSON at top level
         });
+
         const responseText = await res.text();
         console.log('Response:', res.status, responseText);
 
